@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notebook</title>
+    <style>
+        #container {
+            width: 90%;
+            height: 800px;
+            background-color: aquamarine;
+            margin: auto;
+        }
+
+        .box {
+            width: 50%;
+            height: 400px;
+            float: left;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        li {
+            font-size: 22px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='container'>
+        <div class="box" style="background-color: blueviolet;">
+            <h1>Your last notes:</h1>
+            <ul>
+                {% for note in object_list %}
+                <li><a href="{% url 'note:note-detail' note.pk %}">{{ note.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="box" style="background-color: brown;">
+            {% if update %}
+            <form action="{% url 'note:note-update' note.pk %}" method="post">
+                {% csrf_token%}
+                {{ form.as_p }}<br>
+                <input type="submit" value="edit">
+            </form>
+            {% else %}
+            <form action="{% url 'note:note-create' %}" method="post">
+                {% csrf_token%}
+                {{ form.as_p }}<br>
+                <input type="submit" value="Save">
+            </form>
+            {% endif %}
+        </div>
+        <div class="box" style="background-color: burlywood;">
+            {% if detail %}
+            <h2>{{note.title}}</h2>
+            <p>{{note.content}}</p>
+            <a href="{% url 'note:note-update' note.pk %}"><button type="submit">Edit</button></a>
+            <a href="{% url 'note:note-delete' note.pk %}"><button type="submit">Delete</button></a>
+            {% endif %}
+            {% if delete %}
+            <form action="{% url 'note:note-delete' note.pk %}" method="post">{% csrf_token %}
+                {{delete}}
+                <input type="submit" value="yes">
+                <a href="{% url 'note:note-list' %}"><button type="button">no</button></a>
+            </form>
+            {% endif %}
+        </div>
+        <div class="box" style="background-color: cadetblue;"></div>
+    </div>
+
+</body>
+
+</html>
